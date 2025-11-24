@@ -1,4 +1,3 @@
-import { Welcome } from "../../welcome/welcome";
 import { Outlet } from "react-router";
 
 export function meta() {
@@ -59,7 +58,9 @@ export default function Home() {
                 <p>This is the description for the post.</p>
                 <span>Read more...</span>
                 <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">realworld</li>
+                  <li className="tag-default tag-pill tag-outline">
+                    realworld
+                  </li>
                   <li className="tag-default tag-pill tag-outline">
                     implementations
                   </li>
@@ -90,7 +91,9 @@ export default function Home() {
                 <p>This is the description for the post.</p>
                 <span>Read more...</span>
                 <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">realworld</li>
+                  <li className="tag-default tag-pill tag-outline">
+                    realworld
+                  </li>
                   <li className="tag-default tag-pill tag-outline">
                     implementations
                   </li>
