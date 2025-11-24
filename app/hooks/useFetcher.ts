@@ -12,6 +12,7 @@ export const useFetcher = <T, R>() => {
 
   return {
     ...fetcher?.data,
+    isLoading: fetcher.state === 'loading',
     fetcher
   };
 };

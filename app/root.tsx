@@ -12,10 +12,24 @@ import "./app.css";
 import Nav from "~/components/Nav";
 import { Footer } from "~/components/Footer";
 import fetchClient from "~/libs/api";
+import { getSession } from "./session.server";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const user = await fetchClient.GET("/user");
-  return { user: user.data?.user };
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  if (session.has("token")) {
+    const user = await fetchClient.GET("/user", {
+      headers: {
+        Authorization: `Token ${session.get("token")}`,
+      },
+    });
+
+    return { user: user.data?.user };
+  }
+
+  return {
+    user: null,
+  };
 }
 
 export const links: Route.LinksFunction = () => [
@@ -64,7 +78,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App(props: Route.ComponentProps) {
-  // console.log(props.loaderData);
+  console.log(props.loaderData);
   return <Outlet />;
 }
 

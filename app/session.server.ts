@@ -17,7 +17,7 @@ const { getSession, commitSession, destroySession } =
         name: COOKIE_KEY,
         // expires: new Date(Date.now() + 60_000),
         httpOnly: true,
-        maxAge: 60,
+        maxAge: 60 * 60 * 1000,
         path: "/",
         sameSite: "lax",
         secrets: [process.env.SESSION_SECRET!],

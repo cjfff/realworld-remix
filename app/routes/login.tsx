@@ -8,6 +8,14 @@ import { useFetcher } from "~/hooks/useFetcher";
 import type { components } from "~/consts/schema";
 import { commitSession, getSession } from "~/session.server";
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  if (session.has("token")) {
+    return redirect("/");
+  }
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const data = Object.fromEntries(await request.formData());
   const result = inputsSchema.safeParse(data);
@@ -27,7 +35,7 @@ export async function action({ request }: Route.ActionArgs) {
   if (res.error) {
     return {
       formState: data,
-      errors: res.error.errors,
+      errors: res.error.errors.body,
     };
   }
 
