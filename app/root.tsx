@@ -10,7 +10,13 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import Nav from "~/components/Nav";
-import { Footer } from "./components/footer/index";
+import { Footer } from "~/components/Footer";
+import fetchClient from "~/libs/api";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const user = await fetchClient.GET("/user");
+  return { user: user.data?.user };
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -57,7 +63,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export default function App(props: Route.ComponentProps) {
+  // console.log(props.loaderData);
   return <Outlet />;
 }
 

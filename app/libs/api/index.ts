@@ -38,3 +38,4 @@ const myMiddleware: Middleware = {
 fetchClient.use(myMiddleware)
 
 export default fetchClient;
+
