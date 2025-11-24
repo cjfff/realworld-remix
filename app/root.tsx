@@ -6,13 +6,15 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { useHydrateAtoms } from "jotai/utils";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import Nav from "~/components/Nav";
+import { Nav } from "~/components/NavHeader";
 import { Footer } from "~/components/Footer";
 import fetchClient from "~/libs/api";
 import { getSession } from "./session.server";
+import { userAtom } from "./store/user";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -28,7 +30,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   return {
-    user: null,
+    user: undefined,
   };
 }
 
@@ -78,7 +80,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App(props: Route.ComponentProps) {
-  console.log(props.loaderData);
+  useHydrateAtoms([[userAtom, props.loaderData.user]]);
   return <Outlet />;
 }
 
