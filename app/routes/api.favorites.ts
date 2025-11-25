@@ -9,22 +9,22 @@ export async function action({ request }: ActionFunctionArgs) {
   }
   let formData = await request.formData();
   const data = Object.fromEntries(formData);
-  const { action, username } = data as {
-    username: string;
-    action: "follow" | "unfollow";
+  const { action, slug } = data as {
+    slug: string;
+    action: "favorite" | "unfavorite";
   };
 
   const params = {
     params: {
       path: {
-        username,
+        slug,
       },
     },
   };
 
-  await (action === "follow"
-    ? fetchClient.POST("/profiles/{username}/follow", params)
-    : fetchClient.DELETE("/profiles/{username}/follow", params));
+  await (action === "favorite"
+    ? fetchClient.POST("/articles/{slug}/favorite", params)
+    : fetchClient.DELETE("/articles/{slug}/favorite", params));
 
   return true;
 }
