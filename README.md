@@ -1,87 +1,133 @@
-# Welcome to React Router!
+# ![RealWorld Example App](logo.png)
 
-A modern, production-ready template for building full-stack React applications using React Router.
+> ### [Remix + React Router] codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+### [Demo](#) &nbsp;&nbsp;&nbsp;&nbsp; [RealWorld](https://github.com/gothinkster/realworld)
 
-## Features
+This codebase demonstrates a fully fledged fullstack application built with **Remix** and **React Router** including CRUD operations, authentication, routing, and more.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+Every effort has been made to stay true to **React Router** and **Remix** best practices.
 
-## Getting Started
+For more on how this project works, or to try with other frontends/backends, see the main [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-### Installation
+# How it works
 
-Install the dependencies:
+This application uses modern web technologies and leverages the power of Remix for SSR, React Router for client-side navigation, and idiomatic React throughout.
 
-```bash
+## Architecture Overview
+
+### Core Technologies
+
+- **Remix** – Modern fullstack React framework with first-class SSR support
+- **React Router** – Powerful routing for data loading & nested UIs
+- **TypeScript** – Type-safe development
+- **Tailwind CSS** – Utility-first CSS framework
+
+### Key Architectural Patterns
+
+#### 1. **Server-side Rendering by Default**
+- All routes render on the server initially for optimal SEO and fast page loads.
+- Client-side transitions and data loading handled by React Router.
+
+#### 2. **Type-Safe API Layer**
+- All API entities fully typed using TypeScript interfaces.
+- Error handling and validation integrated at endpoints.
+
+#### 3. **Flexible Data Loading**
+- Loader functions fetch data on both server and client.
+- Mutations handled via Remix's action API.
+
+#### 4. **Authentication Flow**
+- JWT stored in secure, HTTP-only cookies.
+- Authentication checked in loaders and actions.
+- Session managed via cookie utilities.
+
+#### 5. **Styling and Components**
+- Tailwind CSS preconfigured.
+- Global utility class support and purging for production.
+
+### Project Structure
+
+```
+app/
+├── routes/                  # Route modules
+│   ├── articles.tsx         # Article pages
+│   ├── editor.tsx           # Editor form
+│   ├── login.tsx            # Authentication pages
+│   ├── profile.tsx          # User profile
+│   └── settings.tsx         # User settings
+├── components/              # Shared UI components
+├── styles/                  # Tailwind CSS setup
+├── utils/                   # Utility functions (API, session, etc)
+├── entry.client.tsx         # Remix entry for client
+├── entry.server.tsx         # Remix entry for server
+└── root.tsx                 # Root layout and error boundaries
+```
+
+### Features
+
+- ✅ **Authentication** - Register, login, logout with JWT
+- ✅ **Articles** - Create, read, update, delete articles
+- ✅ **Comments** - Add and delete comments to articles
+- ✅ **Favorites** - Favorite/unfavorite articles
+- ✅ **Follow** - Follow/unfollow users
+- ✅ **Profiles** - View user profile pages
+- ✅ **Editor** - Create/Edit markdown articles
+- ✅ **Pagination** - Paginated article feeds
+- ✅ **Tags** - Filter articles by tag
+- ✅ **Feeds** - Your feed / Global feed
+
+# Getting Started
+
+## Prerequisites
+
+- Node.js 18+
+- npm (or pnpm/yarn)
+
+## Installation
+
+```sh
 npm install
 ```
 
-### Development
+## Environment Variables
+
+Copy and edit `.env.example`:
+
+```env
+API_URL=https://api.realworld.show/api
+SESSION_SECRET=your-secret-key-here
+```
+
+## Development
 
 Start the development server with HMR:
 
-```bash
+```sh
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Visit http://localhost:5173 to view the app.
 
-## Building for Production
+## Build for Production
 
-Create a production build:
-
-```bash
+```sh
 npm run build
 ```
 
 ## Deployment
 
-### Docker Deployment
+### Docker
 
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+```sh
+docker build -t realworld-remix .
+docker run -p 3000:3000 realworld-remix
 ```
+Docker can be deployed to any platform supporting containers.
 
-The containerized application can be deployed to any platform that supports Docker, including:
+### DIY Node
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+Deploy the output of `npm run build`. The server is production-ready.
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+├──

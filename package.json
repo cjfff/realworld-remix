@@ -2,6 +2,7 @@
   "name": "realworld-remix",
   "private": true,
   "type": "module",
+  "author": "https://github.com/cjfff",
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
