@@ -1,26 +1,51 @@
-import { Outlet } from "react-router";
+import { Link, Outlet, useLoaderData } from "react-router";
+import type { Route } from "../+types/root";
+import fetchClient from "~/libs/api";
+import { Avatar } from "../components/Avatar/index";
+import { useUser } from "~/hooks/useUser";
+import { FollowButton } from "~/components/FollowButton";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const username = params.username;
+  const res = await fetchClient.GET("/profiles/{username}", {
+    params: {
+      path: {
+        username: username!,
+      },
+    },
+  });
+  return {
+    profile: res.data?.profile,
+  };
+}
 
 export default () => {
+  const { profile } = useLoaderData<typeof loader>();
+  const user = useUser();
+
   return (
     <div className="profile-page">
       <div className="user-info">
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <img src="http://i.imgur.com/Qr71crq.jpg" className="user-img" />
-              <h4>Eric Simons</h4>
-              <p>
-                Cofounder @GoThinkster, lived in Aol's HQ for a few months,
-                kinda looks like Peeta from the Hunger Games
-              </p>
-              <button className="btn btn-sm btn-outline-secondary action-btn">
-                <i className="ion-plus-round"></i>
-                &nbsp; Follow Eric Simons
-              </button>
-              <button className="btn btn-sm btn-outline-secondary action-btn">
-                <i className="ion-gear-a"></i>
-                &nbsp; Edit Profile Settings
-              </button>
+              <Avatar className="user-img" src={profile?.image} />
+              <h4>{profile?.username}</h4>
+              <p>{profile?.bio || "There are noting left on the bio"}</p>
+              {user?.username !== profile?.username && profile ? (
+                <FollowButton profile={profile} />
+              ) : null}
+              {user ? (
+                <>
+                  <Link
+                    to="/settings"
+                    className="btn btn-sm btn-outline-secondary action-btn"
+                  >
+                    <i className="ion-gear-a"></i>
+                    &nbsp; Edit Profile Settings
+                  </Link>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -67,13 +92,17 @@ export default () => {
                 <p>This is the description for the post.</p>
                 <span>Read more...</span>
                 <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">realworld</li>
+                  <li className="tag-default tag-pill tag-outline">
+                    realworld
+                  </li>
                   <li className="tag-default tag-pill tag-outline">
                     implementations
                   </li>
                 </ul>
               </a>
             </div>
+
+            <Outlet />
 
             <div className="article-preview">
               <div className="article-meta">
@@ -122,3 +151,15 @@ export default () => {
     </div>
   );
 };
+
+export async function action({ request }: Route.ActionArgs) {
+  let formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  const { intent } = data;
+
+  switch (intent) {
+    default: {
+      throw Error("unknown intent" + intent);
+    }
+  }
+}

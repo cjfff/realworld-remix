@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "react-router";
+import { createCookieSessionStorage, type ActionFunctionArgs } from "react-router";
 import { COOKIE_KEY } from "./consts";
 
 type SessionData = {
@@ -27,3 +27,12 @@ const { getSession, commitSession, destroySession } =
   );
 
 export { getSession, commitSession, destroySession };
+
+
+
+
+export const checkIsLogin = async (request: ActionFunctionArgs['request']) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  return session.has('token')
+}
