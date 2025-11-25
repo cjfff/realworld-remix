@@ -1,12 +1,11 @@
-import { useAtom } from "jotai";
 import { Link } from "react-router";
-import { userAtom } from "~/store/user";
+import { useUser } from "~/hooks/useUser";
 
 export const defaultAvatarUrl =
   "https://raw.githubusercontent.com/gothinkster/node-express-realworld-example-app/refs/heads/master/src/assets/images/smiley-cyrus.jpeg";
 
 export const LoginLink = () => {
-  const [user] = useAtom(userAtom);
+  const user = useUser();
 
   return (
     <li className="nav-item">

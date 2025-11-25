@@ -1,8 +1,7 @@
 import { Link } from "react-router";
 import { Menu } from "./Menu";
 import { LoginLink } from "./LoginLink";
-import { useAtom } from "jotai";
-import { userAtom } from "~/store/user";
+import { useUser } from "~/hooks/useUser";
 
 const menus = [
   { path: "/", children: "Home" },
@@ -29,8 +28,9 @@ const menus = [
 ];
 
 export const Nav = () => {
-  const [user] = useAtom(userAtom);
-  const isLogin = !!user
+  const user = useUser();
+
+  const isLogin = !!user;
 
   const menuData = menus.filter((item) => {
     if (isLogin) {
