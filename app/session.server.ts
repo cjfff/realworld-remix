@@ -1,5 +1,6 @@
 import { createCookieSessionStorage, type ActionFunctionArgs } from "react-router";
 import { COOKIE_KEY } from "./consts";
+import fetchClient from "./libs/api";
 
 type SessionData = {
   token: string;
@@ -35,4 +36,18 @@ export const checkIsLogin = async (request: ActionFunctionArgs['request']) => {
   const session = await getSession(request.headers.get("Cookie"));
 
   return session.has('token')
+}
+
+
+export const getSessionToken = async (request: ActionFunctionArgs['request']) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  return session.get('token')
+}
+
+
+export const getUser = async(request: ActionFunctionArgs['request']) => {
+  const user = await fetchClient.GET("/user");
+
+  return user
 }

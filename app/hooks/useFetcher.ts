@@ -7,7 +7,7 @@ export type TypeFetcherData<T, R> = {
   data: R
 };
 
-export const useFetcher = <T, R>() => {
+export const useFetcher = <T, R = T>() => {
   const fetcher = useFetcherInner<TypeFetcherData<T, R>>();
 
   return {
