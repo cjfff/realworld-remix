@@ -138,8 +138,8 @@ Deploy the output of `npm run build`. The server is production-ready.
 
 # Tech Stack
 
-- **Framework:** Remix
-- **Routing/Data:** React Router v6
+- **Framework:** React Router v7
+- **Routing/Data:** React Router v7
 - **Type-safety:** TypeScript
 - **Styling:** Tailwind CSS
 - **State Management:** Loaders/Actions + React context
