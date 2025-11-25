@@ -130,4 +130,21 @@ Docker can be deployed to any platform supporting containers.
 Deploy the output of `npm run build`. The server is production-ready.
 
 ```
-├──
+├── package.json
+├── build/
+│   ├── client/    # Static assets
+│   └── server/    # SSR handler
+```
+
+# Tech Stack
+
+- **Framework:** Remix
+- **Routing/Data:** React Router v6
+- **Type-safety:** TypeScript
+- **Styling:** Tailwind CSS
+- **State Management:** Loaders/Actions + React context
+- **Authentication:** JWT w/ cookie sessions
+
+# License
+
+MIT
