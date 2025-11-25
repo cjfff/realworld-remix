@@ -5,13 +5,11 @@ import { inputsSchema, type Inputs } from "~/libs/schemas/register";
 import fetchClient from "~/libs/api";
 import { useFetcher } from "~/hooks/useFetcher";
 import type { components } from "~/consts/schema";
-import { commitSession, getSession } from "~/session.server";
+import { checkIsLogin, commitSession, getSession } from "~/session.server";
 import { ErrorMessage } from "~/components/ErrorMessage";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-
-  if (session.has("token")) {
+  if (await checkIsLogin(request)) {
     return redirect("/");
   }
 }

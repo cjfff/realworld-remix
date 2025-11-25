@@ -6,15 +6,14 @@ import fetchClient from "~/libs/api";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { useFetcher } from "~/hooks/useFetcher";
 import type { components } from "~/consts/schema";
-import { commitSession, getSession } from "~/session.server";
+import { checkIsLogin, commitSession, getSession } from "~/session.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-
-  if (session.has("token")) {
+  if (await checkIsLogin(request)) {
     return redirect("/");
   }
 }
+
 
 export async function action({ request }: Route.ActionArgs) {
   const data = Object.fromEntries(await request.formData());
