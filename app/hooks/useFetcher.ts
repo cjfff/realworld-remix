@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useFetcher as useFetcherInner } from "react-router";
 
 export type TypeFetcherData<T, R> = {
@@ -9,10 +10,12 @@ export type TypeFetcherData<T, R> = {
 
 export const useFetcher = <T, R = T>() => {
   const fetcher = useFetcherInner<TypeFetcherData<T, R>>();
+  const formRef = useRef<HTMLFormElement>(null)
 
   return {
     ...fetcher?.data,
     isLoading: fetcher.state !== 'idle',
-    fetcher
+    fetcher,
+    formRef
   };
 };

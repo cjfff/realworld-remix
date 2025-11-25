@@ -84,17 +84,19 @@ export async function action({ request, params }: Route.ActionArgs) {
     },
   };
 
-  const res = await (slug
-    ? fetchClient.PUT("/articles/{slug}", {
-        ...fetchParams,
-        params: {
-          path: {
-            slug,
+  const res = await(
+    slug
+      ? fetchClient.PUT("/articles/{slug}", {
+          ...fetchParams,
+          params: {
+            path: {
+              slug,
+            },
           },
-        },
-      })
-    : fetchClient.POST("/articles", fetchParams));
-  console.log(res, "res");
+        })
+      : fetchClient.POST("/articles", fetchParams)
+  );
+
   if (res.error) {
     return {
       errors: res.error.errors.body,

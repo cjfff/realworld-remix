@@ -8,12 +8,8 @@ export const FollowButton = ({
 }) => {
   const { fetcher, isLoading } = useFetcher();
   return (
-    <fetcher.Form method="post" action="/api/follow">
-      <input
-        type="hidden"
-        name="username"
-        value={profile?.username}
-      />
+    <fetcher.Form method="post" className="inline" action="/api/follow">
+      <input type="hidden" name="username" value={profile?.username} />
       <input
         type="hidden"
         name="action"
