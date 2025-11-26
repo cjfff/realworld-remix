@@ -1,67 +1,75 @@
 # ![RealWorld Example App](logo.png)
 
-> ### [Remix + React Router] codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
+> Full-stack [RealWorld](https://github.com/gothinkster/realworld) implementation powered by the React Router v7 framework, TypeScript, Tailwind CSS v4, and the official RealWorld API schema.
 
-### [Demo](#) &nbsp;&nbsp;&nbsp;&nbsp; [RealWorld](https://github.com/gothinkster/realworld)
+### Demo (coming soon) &nbsp;&nbsp;&nbsp;&nbsp; [Spec](https://github.com/gothinkster/realworld)
 
-This codebase demonstrates a fully fledged fullstack application built with **Remix** and **React Router** including CRUD operations, authentication, routing, and more.
+This project showcases a production-style CRUD application with authentication, feed management, markdown authoring, and responsive UI patterns. It follows idiomatic **React Router data APIs** (loaders/actions), keeps networking type-safe through OpenAPI-generated clients, and leans on SSR-first rendering for great SEO and performance.
 
-Every effort has been made to stay true to **React Router** and **Remix** best practices.
-
-For more on how this project works, or to try with other frontends/backends, see the main [RealWorld](https://github.com/gothinkster/realworld) repo.
+For more background on the RealWorld initiative or to pair this frontend with other backends, visit the main [RealWorld](https://github.com/gothinkster/realworld) repository.
 
 # How it works
 
-This application uses modern web technologies and leverages the power of Remix for SSR, React Router for client-side navigation, and idiomatic React throughout.
+This application uses modern web technologies and leverages React Router’s server + client data APIs for streaming SSR, nested routing, and optimistic UI patterns.
 
 ## Architecture Overview
 
 ### Core Technologies
 
-- **Remix** – Modern fullstack React framework with first-class SSR support
-- **React Router** – Powerful routing for data loading & nested UIs
-- **TypeScript** – Type-safe development
-- **Tailwind CSS** – Utility-first CSS framework
+- **React Router v7** – Framework mode with loader/action data APIs, SSR, and flat-routes
+- **TypeScript** – End-to-end type safety (components, loaders, API wrappers)
+- **Tailwind CSS v4** – Utility-first styling via the new `@tailwindcss/vite` plugin
+- **OpenAPI tooling** – `openapi-typescript` + `openapi-fetch` for strongly typed API calls
 
 ### Key Architectural Patterns
 
-#### 1. **Server-side Rendering by Default**
-- All routes render on the server initially for optimal SEO and fast page loads.
-- Client-side transitions and data loading handled by React Router.
+#### 1. **SSR by Default**
+- All routes stream HTML from the server before hydrating on the client.
+- Subsequent navigation reuses loaders/actions for granular fetching.
 
 #### 2. **Type-Safe API Layer**
-- All API entities fully typed using TypeScript interfaces.
-- Error handling and validation integrated at endpoints.
+- OpenAPI schema (`openapi/schema.yml`) generates `app/consts/schema.d.ts`.
+- `openapi-fetch` + custom middleware ensure consistent headers and error handling.
 
 #### 3. **Flexible Data Loading**
-- Loader functions fetch data on both server and client.
-- Mutations handled via Remix's action API.
+- Each route module exports loaders/actions for data mutations and fetching.
+- Shared logic extracted into `app/hooks` and `app/libs` helpers.
 
 #### 4. **Authentication Flow**
-- JWT stored in secure, HTTP-only cookies.
-- Authentication checked in loaders and actions.
-- Session managed via cookie utilities.
+- JWT stored via secure HTTP-only cookie (`app/session.server.ts`).
+- Loaders/actions gate access by checking `SESSION_SECRET`-backed sessions.
+- Client API calls reuse the issued token through a fetch middleware.
 
 #### 5. **Styling and Components**
-- Tailwind CSS preconfigured.
-- Global utility class support and purging for production.
+- Tailwind v4 is configured once in `app/app.css`.
+- Shared UI primitives live under `app/components` (buttons, navigation, avatars, etc.).
 
 ### Project Structure
 
 ```
 app/
-├── routes/                  # Route modules
-│   ├── articles.tsx         # Article pages
-│   ├── editor.tsx           # Editor form
-│   ├── login.tsx            # Authentication pages
-│   ├── profile.tsx          # User profile
-│   └── settings.tsx         # User settings
-├── components/              # Shared UI components
-├── styles/                  # Tailwind CSS setup
-├── utils/                   # Utility functions (API, session, etc)
-├── entry.client.tsx         # Remix entry for client
-├── entry.server.tsx         # Remix entry for server
-└── root.tsx                 # Root layout and error boundaries
+├── app.css                  # Tailwind v4 entry point
+├── components/              # Presentational + reusable UI pieces
+├── consts/                  # Global constants + generated API schema
+├── hooks/                   # Custom hooks (session, fetcher, user state)
+├── libs/
+│   ├── actions/             # Shared loaders/actions helpers
+│   ├── api/                 # Typed OpenAPI client + middleware
+│   └── schemas/             # zod schemas for forms
+├── routes/                  # File-system routes (fs-routes powered)
+│   ├── _home.*              # Feed + tabbed home routes
+│   ├── article.$slug.tsx    # Article detail
+│   ├── editor.($slug.)      # Article craete/edit page
+│   ├── login.tsx            # Login page
+│   ├── register.tsx         # register page
+│   ├── settings/            # Change User profile
+│   ├── editor.($slug)/      # Create/update editor
+│   ├── profile.$username.*  # Profile feeds
+│   └── api.*                # Server-only API proxy routes
+├── routes.ts                # `flatRoutes()` entry
+├── root.tsx                 # Root layout, error boundary, document head
+├── session.server.ts        # Cookie/session helpers
+└── store/                   # Zustand-like user store for cross-route sharing
 ```
 
 ### Features
@@ -81,8 +89,8 @@ app/
 
 ## Prerequisites
 
-- Node.js 18+
-- npm (or pnpm/yarn)
+- Node.js 18+ (the Dockerfile targets Node 20 Alpine)
+- npm 9+ (lockfile committed as `package-lock.json`; pnpm/yarn will work but are not configured in CI)
 
 ## Installation
 
@@ -92,58 +100,71 @@ npm install
 
 ## Environment Variables
 
-Copy and edit `.env.example`:
+Create a `.env` file in the project root with the required secrets (no template file is committed):
 
 ```env
-API_URL=https://api.realworld.show/api
-SESSION_SECRET=your-secret-key-here
+SESSION_SECRET=replace-with-long-random-string
+NEXT_PUBLIC_API_ENDPOINT=https://api.realworld.show/api
 ```
 
-## Development
+- `SESSION_SECRET` powers the secure HTTP-only cookie in `app/session.server.ts`.
+- `NEXT_PUBLIC_API_ENDPOINT` configures the OpenAPI client (`app/libs/api`); defaults to the public RealWorld API but can be pointed to any compatible backend.
 
-Start the development server with HMR:
+Restart the dev server whenever these values change.
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the React Router dev server with hot reloading (port logged in terminal, defaults to 5173). |
+| `npm run build` | Create optimized client + server bundles in `./build`. |
+| `npm run start` | Serve the production build via `react-router-serve` (defaults to port 3000, respects `PORT`). |
+| `npm run typecheck` | Generate loader/action types (`react-router typegen`) and run `tsc --noEmit`. |
+| `npm run openapi` | Regenerate `app/consts/schema.d.ts` from `openapi/schema.yml`. Run this after editing the schema. |
+
+## Development
 
 ```sh
 npm run dev
 ```
 
-Visit http://localhost:5173 to view the app.
+Open the logged local URL (usually http://localhost:5173). API requests proxy directly to `NEXT_PUBLIC_API_ENDPOINT`, so ensure CORS is properly configured if you switch to a self-hosted backend.
 
-## Build for Production
+## Build & Preview
 
 ```sh
 npm run build
+npm run start
 ```
 
-## Deployment
+`npm run start` consumes the generated `build/server/index.js` output. Set `PORT` if you need something other than 3000.
 
-### Docker
+## Docker
 
-```sh
+```
 docker build -t realworld-remix .
-docker run -p 3000:3000 realworld-remix
+docker run --rm -p 3000:3000 \
+  -e SESSION_SECRET=replace-me \
+  -e NEXT_PUBLIC_API_ENDPOINT=https://api.realworld.show/api \
+  realworld-remix
 ```
-Docker can be deployed to any platform supporting containers.
 
-### DIY Node
-
-Deploy the output of `npm run build`. The server is production-ready.
-
-```
-├── package.json
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # SSR handler
-```
+The multi-stage Dockerfile installs dependencies, builds the project, and runs `npm run start` inside Node 20 Alpine. Provide your secrets at runtime (do not bake them into the image).
 
 # Tech Stack
 
-- **Framework:** React Router v7
-- **Routing/Data:** React Router v7
-- **Type-safety:** TypeScript
-- **Styling:** Tailwind CSS
-- **State Management:** Loaders/Actions + React context
-- **Authentication:** JWT w/ cookie sessions
+- **Framework**: React Router v7 (framework mode)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 + custom CSS tokens
+- **Networking**: `openapi-fetch`, `openapi-react-query`, and Zod validation helpers
+- **State Management**: Route loaders/actions and lightweight stores in `app/store`
+- **Authentication**: JWT via secure cookies + API middleware token forwarding
+
+# Troubleshooting
+
+- Missing types after modifying routes? Run `npm run typecheck` to refresh `react-router` typegen output.
+- API requests failing locally? Double-check `NEXT_PUBLIC_API_ENDPOINT` and ensure CORS allows your dev origin.
+- Session errors in development? Provide a long, random `SESSION_SECRET`; short strings will cause cookie signing failures.
 
 # License
 
