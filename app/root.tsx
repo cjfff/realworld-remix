@@ -12,7 +12,7 @@ import "./app.css";
 import { Nav } from "~/components/NavHeader";
 import { Footer } from "~/components/Footer";
 import fetchClient from "~/libs/api";
-import { getSession } from "./session.server";
+import { destroySession, getSession } from "./session.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -20,9 +20,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   if (session.has("token")) {
     // attach the token to the api
     fetchClient.token = session.get("token") || "";
-    const user = await fetchClient.GET("/user");
-
-    return { user: user.data?.user };
+    try {
+      const user = await fetchClient.GET("/user");
+      return { user: user.data?.user };
+    } catch (error) {
+      fetchClient.token = undefined;
+      // return { user: undefined };
+      return new Response(JSON.stringify({ user: undefined }), {
+        status: 200,
+        headers: {
+          "Content-Type": "applicaiton/json",
+          "Set-Cookie": await destroySession(session),
+        },
+      });
+    }
   }
 
   return {

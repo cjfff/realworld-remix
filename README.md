@@ -156,7 +156,7 @@ The multi-stage Dockerfile installs dependencies, builds the project, and runs `
 - **Framework**: React Router v7 (framework mode)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4 + custom CSS tokens
-- **Networking**: `openapi-fetch`, `openapi-react-query`, and Zod validation helpers
+- **Networking**: `openapi-fetch` and Zod validation helpers
 - **State Management**: Route loaders/actions and lightweight stores in `app/store`
 - **Authentication**: JWT via secure cookies + API middleware token forwarding
 
