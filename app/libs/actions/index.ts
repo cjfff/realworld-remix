@@ -1,5 +1,5 @@
+import { data } from "react-router";
+
 export async function loader() {
-  throw new Response("Page not found", {
-    status: 404,
-  });
+  throw data(null, { status: 404 });
 }
