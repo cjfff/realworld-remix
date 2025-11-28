@@ -8,7 +8,6 @@ import type { components } from "~/consts/schema";
 import { destroySession, getSession } from "~/session.server";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import fetchClient from "~/libs/api";
-// import { useUser } from "~/hooks/useUser";
 import { userContext } from "~/context/user";
 
 export const loader = ({ context }: Route.LoaderArgs) => {
@@ -77,7 +76,6 @@ export default () => {
     components["schemas"]["User"]
   >();
   const { user } = useLoaderData<typeof loader>();
-  // const user = useUser;
 
   return (
     <div className="settings-page">

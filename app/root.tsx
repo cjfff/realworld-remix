@@ -16,7 +16,7 @@ import { destroySession, getSession } from "./session.server";
 import { userContext } from "./context/user";
 
 export const middleware: Route.MiddlewareFunction[] = [
-  async ({ request, context }) => {
+  async ({ request, context }, next) => {
 
     const session = await getSession(request.headers.get("Cookie"));
 
@@ -24,11 +24,13 @@ export const middleware: Route.MiddlewareFunction[] = [
       fetchClient.token = session.get("token") || "";
       try {
         const user = await fetchClient.GET("/user");
-        context.set(userContext, user.data?.user!);
+        await context.set(userContext, user.data?.user!);
       } catch (error) {
         fetchClient.token = undefined;
       }
     }
+
+    await next()
   },
 ];
 

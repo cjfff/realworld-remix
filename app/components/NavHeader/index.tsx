@@ -17,7 +17,7 @@ const menus = [
     login: true,
   },
   {
-    path: "/setting",
+    path: "/settings",
     children: (
       <>
         <i className="ion-gear-a"></i>&nbsp;Settings{" "}
