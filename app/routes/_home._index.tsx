@@ -25,6 +25,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       },
     },
   });
+
   return {
     ...res.data,
     page: Number(page),

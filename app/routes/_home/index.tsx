@@ -1,9 +1,12 @@
-import { Outlet, useLoaderData, useLocation } from "react-router";
-import type { Route } from "./+types/_home";
+import { Await, Outlet, useLoaderData, useLocation } from "react-router";
+import { Suspense } from "react";
+
 import { useUser } from "~/hooks/useUser";
 import { Tabs } from "~/components/Tabs";
 import fetchClient from "~/libs/api";
 import Tags from "~/components/Tags";
+import type { Route } from "./+types";
+import TagLoading from "./TagLoading";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const res = await fetchClient.GET("/tags");
@@ -52,13 +55,26 @@ export default function Home() {
           </div>
 
           <div className="col-md-3">
-            <div className="sidebar">
-              <p>Popular Tags</p>
-              <Tags link={pathname === '/'} tags={tags} />
-            </div>
+            <Suspense fallback={<TagLoading />}>
+              <Await resolve={tags}>
+                {(tags) => {
+                  return (
+                    <div className="sidebar">
+                      <p>Popular Tags</p>
+                      <Tags link={pathname === "/"} tags={tags} />
+                    </div>
+                  );
+                }}
+              </Await>
+            </Suspense>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+
+export function HydrateFallback() {
+  return <p>Loading Articles...</p>;
 }
