@@ -9,7 +9,6 @@ import { inputsSchema } from "~/libs/schemas/newArticle";
 import { omitBy } from "lodash-es";
 import { authMiddleware } from "~/middlewares/auth";
 
-
 export const middleware: Route.MiddlewareFunction[] = [authMiddleware as unknown as Route.MiddlewareFunction];
 
 export async function loader({ params }: Route.LoaderArgs) {

@@ -5,7 +5,7 @@ export default {
   // Server-side render by default, to enable SPA mode set this to `false`
   ssr: true,
   async prerender() {
-    return ["/login", "/register", '/settings'];
+    return ["/login", "/register"];
   },
   future: {
     'v8_middleware': true

@@ -15,31 +15,45 @@ import fetchClient from "~/libs/api";
 import { destroySession, getSession } from "./session.server";
 import { userContext } from "./context/user";
 
-export async function loader({ request, context }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
+export const middleware: Route.MiddlewareFunction[] = [
+  async ({ request, context }) => {
 
-  if (session.has("token")) {
-    // attach the token to the api
-    fetchClient.token = session.get("token") || "";
-    try {
-      const user = await fetchClient.GET("/user");
-      context.set(userContext, user.data?.user!)
-      return { user: user.data?.user };
-    } catch (error) {
-      fetchClient.token = undefined;
-      return new Response(JSON.stringify({ user: undefined }), {
-        status: 200,
-        headers: {
-          "Content-Type": "applicaiton/json",
-          "Set-Cookie": await destroySession(session),
-        },
-      });
+    const session = await getSession(request.headers.get("Cookie"));
+
+    if (session.has("token")) {
+      fetchClient.token = session.get("token") || "";
+      try {
+        const user = await fetchClient.GET("/user");
+        context.set(userContext, user.data?.user!);
+      } catch (error) {
+        fetchClient.token = undefined;
+      }
     }
+  },
+];
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+
+  if (!user) {
+    const session = await getSession(request.headers.get("Cookie"));
+
+    // without token, just return 
+    if (!session.has('token')) {
+      return { user: undefined };
+    }
+
+    // has token but invalid, should be destroied
+    return new Response(JSON.stringify({ user: undefined }), {
+      status: 200,
+      headers: {
+        "Content-Type": "applicaiton/json",
+        "Set-Cookie": await destroySession(session),
+      },
+    });
   }
 
-  return {
-    user: undefined,
-  };
+  return { user };
 }
 
 export const links: Route.LinksFunction = () => [
