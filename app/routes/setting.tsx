@@ -1,14 +1,21 @@
-import { redirect } from "react-router";
+import { redirect, useLoaderData } from "react-router";
 import { omitBy } from "lodash-es";
 
-import type { Route } from "../+types/login";
+import type { Route } from "../+types/root";
 import { useFetcher } from "~/hooks/useFetcher";
 import { inputsSchema, type Inputs } from "~/libs/schemas/settings";
 import type { components } from "~/consts/schema";
 import { destroySession, getSession } from "~/session.server";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import fetchClient from "~/libs/api";
-import { useUser } from "~/hooks/useUser";
+// import { useUser } from "~/hooks/useUser";
+import { userContext } from "~/context/user";
+
+export const loader = ({ context }: Route.LoaderArgs) => {
+  const user = context.get(userContext);
+
+  return { user };
+};
 
 export async function action({ request }: Route.ActionArgs) {
   let formData = await request.formData();
@@ -69,7 +76,9 @@ export default () => {
     Inputs,
     components["schemas"]["User"]
   >();
-  const user = useUser();
+  const { user } = useLoaderData<typeof loader>();
+  // const user = useUser;
+
   return (
     <div className="settings-page">
       <div className="container page">

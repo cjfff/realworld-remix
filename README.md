@@ -62,7 +62,7 @@ app/
 │   ├── editor.($slug.)      # Article craete/edit page
 │   ├── login.tsx            # Login page
 │   ├── register.tsx         # register page
-│   ├── settings/            # Change User profile
+│   ├── setting/            # Change User profile
 │   ├── editor.($slug)/      # Create/update editor
 │   ├── profile.$username.*  # Profile feeds
 │   └── api.*                # Server-only API proxy routes

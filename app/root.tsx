@@ -35,6 +35,7 @@ export const middleware: Route.MiddlewareFunction[] = [
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
 
+
   if (!user) {
     const session = await getSession(request.headers.get("Cookie"));
 
@@ -103,7 +104,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App(props: Route.ComponentProps) {
-  return <Outlet />;
+  return  <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -120,6 +121,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
+
+    console.log(stack, "stack");
   }
 
   return (
