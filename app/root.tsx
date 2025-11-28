@@ -13,8 +13,9 @@ import { Nav } from "~/components/NavHeader";
 import { Footer } from "~/components/Footer";
 import fetchClient from "~/libs/api";
 import { destroySession, getSession } from "./session.server";
+import { userContext } from "./context/user";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
 
   if (session.has("token")) {
@@ -22,10 +23,10 @@ export async function loader({ request }: Route.LoaderArgs) {
     fetchClient.token = session.get("token") || "";
     try {
       const user = await fetchClient.GET("/user");
+      context.set(userContext, user.data?.user!)
       return { user: user.data?.user };
     } catch (error) {
       fetchClient.token = undefined;
-      // return { user: undefined };
       return new Response(JSON.stringify({ user: undefined }), {
         status: 200,
         headers: {
